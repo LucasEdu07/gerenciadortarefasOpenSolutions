@@ -5,7 +5,10 @@ namespace GerenciadorTarefas.Api.Aplicacao.Interfaces;
 
 public interface IServicoTarefa
 {
-    Task<TarefaResposta> CriarAsync(CriarTarefaRequisicao requisicao, CancellationToken cancellationToken);
+    Task<ResultadoCriacaoTarefaResposta> CriarAsync(
+        CriarTarefaRequisicao requisicao,
+        string? chaveIdempotencia,
+        CancellationToken cancellationToken);
 
     Task<ListaPaginadaResposta<TarefaResposta>> ListarAsync(
         ConsultaTarefasRequisicao requisicao,

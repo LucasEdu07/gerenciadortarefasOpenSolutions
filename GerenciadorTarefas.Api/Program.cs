@@ -94,6 +94,21 @@ using (var escopo = app.Services.CreateScope())
 {
     var contexto = escopo.ServiceProvider.GetRequiredService<ContextoAplicacao>();
     contexto.Database.EnsureCreated();
+    contexto.Database.ExecuteSqlRaw(
+        """
+        CREATE TABLE IF NOT EXISTS "RegistrosIdempotencia" (
+            "Chave" TEXT NOT NULL CONSTRAINT "PK_RegistrosIdempotencia" PRIMARY KEY,
+            "HashRequisicao" TEXT NOT NULL,
+            "TarefaId" TEXT NOT NULL,
+            "RespostaEmJson" TEXT NOT NULL,
+            "CriadoEm" TEXT NOT NULL
+        );
+        """);
+    contexto.Database.ExecuteSqlRaw(
+        """
+        CREATE INDEX IF NOT EXISTS "IX_RegistrosIdempotencia_TarefaId"
+        ON "RegistrosIdempotencia" ("TarefaId");
+        """);
 }
 
 app.MapControllers();

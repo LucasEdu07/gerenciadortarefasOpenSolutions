@@ -2,6 +2,18 @@
 
 POST {{GerenciadorTarefas.Api_HostAddress}}/api/tasks
 Content-Type: application/json
+Idempotency-Key: tarefa-001
+
+{
+  "title": "Implementar tratamento global de erros",
+  "description": "Padronizar as respostas da API com ProblemDetails."
+}
+
+###
+
+POST {{GerenciadorTarefas.Api_HostAddress}}/api/tasks
+Content-Type: application/json
+Idempotency-Key: tarefa-001
 
 {
   "title": "Implementar tratamento global de erros",

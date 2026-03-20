@@ -1,6 +1,6 @@
 # Gerenciador de Tarefas
 
-API REST em .NET 8 para gerenciamento de tarefas, desenvolvida como teste técnico com foco em clareza, regras de negócio, validações, paginação e tratamento consistente de erros.
+API REST em .NET 8 para gerenciamento de tarefas, desenvolvida como teste tecnico com foco em clareza, regras de negocio, validacoes, paginacao, tratamento consistente de erros e idempotencia no endpoint de criacao.
 
 ## Tecnologias
 
@@ -12,7 +12,7 @@ API REST em .NET 8 para gerenciamento de tarefas, desenvolvida como teste técni
 
 ## Como executar
 
-No diretório raiz do projeto:
+No diretorio raiz do projeto:
 
 ```bash
 dotnet restore .\GerenciadorTarefas.sln
@@ -39,19 +39,22 @@ dotnet test .\GerenciadorTarefas.Testes\GerenciadorTarefas.Testes.csproj
 - `PUT /api/tasks/{id}`
 - `DELETE /api/tasks/{id}`
 
-## Regras de negócio
+## Regras de negocio
 
-- O título é obrigatório
+- O titulo e obrigatorio
 - Toda nova tarefa inicia com status `Pending`
-- O fluxo de status é linear: `Pending -> InProgress -> Done`
-- Não é permitido regredir status
-- Não é permitido pular etapas
-- Tarefas em `Done` não permitem nova alteração de status
-- `createdAt` e `updatedAt` são gerados pelo sistema
-- A listagem é paginada e aceita filtro por status
+- O fluxo de status e linear: `Pending -> InProgress -> Done`
+- Nao e permitido regredir status
+- Nao e permitido pular etapas
+- Tarefas em `Done` nao permitem nova alteracao de status
+- O `POST /api/tasks` aceita o header `Idempotency-Key`
+- `createdAt` e `updatedAt` sao gerados pelo sistema
+- A listagem e paginada e aceita filtro por status
 
-## Observações
+## Observacoes
 
-- O banco utilizado é SQLite e é criado automaticamente na primeira execução
-- Os nomes internos do código estão em português
-- O contrato da API mantém os campos esperados no desafio, como `title`, `description`, `createdAt` e `updatedAt`
+- O banco utilizado e SQLite e e criado automaticamente na primeira execucao
+- Os nomes internos do codigo estao em portugues
+- O contrato da API mantem os campos esperados no desafio, como `title`, `description`, `createdAt` e `updatedAt`
+- Repetir o `POST` com a mesma `Idempotency-Key` e o mesmo payload reutiliza a criacao anterior
+- Repetir a mesma `Idempotency-Key` com payload diferente retorna `409 Conflict`

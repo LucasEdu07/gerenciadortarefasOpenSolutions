@@ -15,7 +15,7 @@ public sealed class MiddlewareTratamentoExcecoes(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Erro não tratado durante o processamento da requisição.");
+            logger.LogError(exception, "Erro nao tratado durante o processamento da requisicao.");
             await EscreverRespostaAsync(contexto, exception);
         }
     }
@@ -24,18 +24,22 @@ public sealed class MiddlewareTratamentoExcecoes(
     {
         var (codigoStatus, titulo, detalhe) = exception switch
         {
+            ConflitoIdempotenciaException => (
+                StatusCodes.Status409Conflict,
+                "Conflito de idempotencia",
+                exception.Message),
             RecursoNaoEncontradoException => (
                 StatusCodes.Status404NotFound,
-                "Recurso não encontrado",
+                "Recurso nao encontrado",
                 exception.Message),
             RegraDeNegocioException => (
                 StatusCodes.Status422UnprocessableEntity,
-                "Violação de regra de negócio",
+                "Violacao de regra de negocio",
                 exception.Message),
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "Erro interno no servidor",
-                "Ocorreu um erro inesperado ao processar a requisição.")
+                "Ocorreu um erro inesperado ao processar a requisicao.")
         };
 
         var detalhesProblema = new ProblemDetails

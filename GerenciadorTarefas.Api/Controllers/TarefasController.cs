@@ -11,16 +11,25 @@ namespace GerenciadorTarefas.Api.Controllers;
 public sealed class TarefasController(IServicoTarefa servicoTarefa) : ControllerBase
 {
     [HttpPost]
+    [ProducesResponseType(typeof(TarefaResposta), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(TarefaResposta), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<TarefaResposta>> Criar(
         [FromBody] CriarTarefaRequisicao requisicao,
+        [FromHeader(Name = "Idempotency-Key")] string? chaveIdempotencia,
         CancellationToken cancellationToken)
     {
-        var resposta = await servicoTarefa.CriarAsync(requisicao, cancellationToken);
+        var resultado = await servicoTarefa.CriarAsync(requisicao, chaveIdempotencia, cancellationToken);
 
-        return CreatedAtAction(nameof(ObterPorId), new { id = resposta.Id }, resposta);
+        if (resultado.Reaproveitado)
+        {
+            Response.Headers.Append("Idempotency-Replayed", "true");
+            return Ok(resultado.Tarefa);
+        }
+
+        return CreatedAtAction(nameof(ObterPorId), new { id = resultado.Tarefa.Id }, resultado.Tarefa);
     }
 
     [HttpGet]
