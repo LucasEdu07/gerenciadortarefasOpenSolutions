@@ -1,0 +1,28 @@
+@GerenciadorTarefas.Api_HostAddress = http://localhost:5187
+
+POST {{GerenciadorTarefas.Api_HostAddress}}/api/tasks
+Content-Type: application/json
+
+{
+  "title": "Implementar tratamento global de erros",
+  "description": "Padronizar as respostas da API com ProblemDetails."
+}
+
+###
+
+GET {{GerenciadorTarefas.Api_HostAddress}}/api/tasks?pageNumber=1&pageSize=10&status=Pending
+
+###
+
+PUT {{GerenciadorTarefas.Api_HostAddress}}/api/tasks/{{id}}
+Content-Type: application/json
+
+{
+  "title": "Implementar tratamento global de erros",
+  "description": "Padronizar as respostas da API com ProblemDetails e logs.",
+  "status": "InProgress"
+}
+
+###
+
+DELETE {{GerenciadorTarefas.Api_HostAddress}}/api/tasks/{{id}}
